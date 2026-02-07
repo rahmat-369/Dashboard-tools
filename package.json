@@ -1,5 +1,8 @@
 {
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" }
-  ]
+  "name": "rhmt-tools",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@upstash/redis": "^1.28.4"
+  }
 }
