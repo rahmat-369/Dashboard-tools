@@ -1,15 +1,12 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
+const redis = Redis.fromEnv();
 
 export default async function handler(req, res) {
-  try {
-    const day = todayKey();
-    await kv.incr(`visitors:${day}`);
-    res.status(200).json({ ok: true });
-  } catch (err) {
-    res.status(500).json({ ok: false });
-  }
+  const today = new Date().toISOString().slice(0, 10);
+  const key = `visitors:${today}`;
+
+  await redis.incr(key);
+
+  res.json({ ok: true });
 }
