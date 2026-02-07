@@ -1,21 +1,15 @@
-let start = Date.now();
-let totalVisitors = 1200;
+import { kv } from "@vercel/kv";
 
-export default function handler(req, res) {
-  // demo increment ringan
-  if (Math.random() < 0.65) totalVisitors++;
+function todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
 
-  const uptime = Math.floor((Date.now() - start) / 1000);
-  const activeNow = Math.floor(Math.random() * 8) + 3;
-  const uploadsToday = Math.floor(Math.random() * 20) + 10;
-  const errorsToday = Math.floor(Math.random() * 3);
-
-  res.status(200).json({
-    status: "ONLINE",
-    totalVisitors,
-    activeNow,
-    uploadsToday,
-    errorsToday,
-    uptime
-  });
+export default async function handler(req, res) {
+  try {
+    const day = todayKey();
+    await kv.incr(`visitors:${day}`);
+    res.status(200).json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ ok: false });
+  }
 }
